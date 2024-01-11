@@ -21,8 +21,9 @@ export class TicketController {
         res.json(this.ticketService.pendingTickets);
     }
 
-    public createTicket =async (req:Request, res: Response) => {
-        res.status(201).json(this.ticketService.createTicket);
+    public createTicket = async (req:Request, res: Response) => {
+        console.log('createTicket');
+        res.status(201).json(this.ticketService.createTicket());
     }
 
     public drawTicket =async (req:Request, res: Response) => {
