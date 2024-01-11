@@ -17,7 +17,7 @@ export class WssService {
         const {server, path = '/ws'} = options;
 
         this.wss = new WebSocketServer({server, path});
-
+        this.start();
     }
 
     static get instance() : WssService {
@@ -30,6 +30,14 @@ export class WssService {
 
     static initWss(options: Options) {
         WssService._instance = new WssService(options);
+    }
+
+    public sendMessage(type:string, payload: Object) {
+        this.wss.clients.forEach(client => {
+            if (client.readyState === WebSocket.OPEN) {
+                client.send(JSON.stringify({type, payload}));
+            }
+        });
     }
 
     public start() {
