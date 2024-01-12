@@ -10,7 +10,7 @@ export class TicketService {
         private readonly wssService = WssService.instance,
     ) {}
 
-    public readonly tickets: Ticket[] = [
+    public tickets: Ticket[] = [
         {id: UuidAdapter.v4(), number: 1, createdAt: new Date(), done: false},
         {id: UuidAdapter.v4(), number: 2, createdAt: new Date(), done: false},
         {id: UuidAdapter.v4(), number: 3, createdAt: new Date(), done: false},
@@ -59,12 +59,13 @@ export class TicketService {
 
         this.workingOnTickets.unshift({...ticket});
         this.onTicketNumberChanged();
+        this.onWorkingTicketsChanged();
         
         return {status: 'ok', ticket};
     }
     
     public finishTicket(id: string) {
-        const ticket = this.tickets.find(t => !t.handleAtDesk);
+        const ticket = this.tickets.find( t => t.id === id );
 
         if (!ticket) return {status: 'error', message: 'ticket not found'};
 
@@ -81,5 +82,8 @@ export class TicketService {
 
     private onTicketNumberChanged() {
         this.wssService.sendMessage('on-ticket-count-changed', this.pendingTickets.length);
+    }
+    private onWorkingTicketsChanged() {
+        this.wssService.sendMessage('on-working-tickets-changed', this.lastWorkingOnTickets);
     }
 }
